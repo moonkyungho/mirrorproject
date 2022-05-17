@@ -1,0 +1,73 @@
+eks 생성 및 삭제
+eksctl.exe create cluster --name mymirror --region ap-northeast-1 --with-oidc --ssh-public-key mkh942000 --nodes 3 --node-type t3.medium --node-volume-size=20 --managed
+
+eksctl.exe delete cluster --name mymirror
+
+gke 생성 및 삭제
+gcloud container clusters create mkh942000 --num-nodes 3 --machine-type g1-small
+
+gcloud container clusters delete mkh942000 
+
+
+kubectl config rename-context old-name new-name
+
+========================
+
+---context 지우기
+kubectl config delete-context gke
+
+---contexts 확인하기 
+kubectl config get-contexts 
+
+contexts 변경하기 
+kubectl config use-context contexts 명 
+
+
+kubectl config set-context --current --namespace=namespace 
+
+
+aws eks update-kubeconfig --region region-code --name cluster-name
+
+
+======================
+
+kubectl run myweb --image=hifrodo/msa:v3 
+
+
+kubectl expose pod myweb --port=80 --name mysvc --type=LoadBalancer
+
+쿠버네티스 containet 갯수 오토스케일링
+kubectl apply -f https://k8s.io/examples/application/php-apache.yaml  #---->설치
+kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10 #---->실행
+부하증기
+kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
+부하중지
+kubectl get hpa php-apache --watch
+
+
+mysql안에서 dump
+mysqldump -u root -p boot_board > /backup/dump.sql
+mysql dump 된걸 다운
+kubectl cp (mysql-98f797c55-tgbjz):/backup/dump.sql ./dump.sql
+               |-->마이스퀠 안 폴더
+
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+메트릭서버 설치
+
+kubectl get pods -n kube-system -l k8s-app=metrics-server
+설치 확인 >> 레디 상태 되면
+
+kubectl get hpa
+언노운이 사라진다! >> 이제 부하 주
+
+자바 디비 연결
+java -jar /work/myspringboot-0.0.1-SNAPSHOT.jar --DB_IP= spring.profiles.active=prod
+
+
+아마존 레디스 설치
+sudo amazon-linux-extras install epel
+
+yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+yum install -y redis
